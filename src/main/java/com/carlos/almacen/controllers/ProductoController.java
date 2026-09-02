@@ -70,7 +70,7 @@ public class ProductoController {
             summary = "Actualizar un producto existente",
             tags = {"Productos - Gestion"}
     )
-    public ResponseEntity<ProductoResponse> actualiar(
+    public ResponseEntity<ProductoResponse> actualizar(
             @PathVariable @Positive(message = "El ID debe ser positivo") Long id,
             @Valid @RequestBody ProductoRequest request
     ){
