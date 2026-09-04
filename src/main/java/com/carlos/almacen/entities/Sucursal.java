@@ -7,16 +7,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "SUCURSALES")
-@NoArgsConstructor
+@Entity // Le decimos a JPA/Hibernate: "Esta clase es una entidad mapeala a una tabla"
+@Table(name = "SUCURSALES") // Especifica explicitamente el nombre de la tabla de la base de datos
+@NoArgsConstructor //Crea un constructor vacio
 @AllArgsConstructor
-@Builder
+@Builder //Objeto encargado en guardar los datos
 @Getter
 public class Sucursal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column (name = "ID_SUCURSAL")
     private Long id;
 
     @Column(name = "NOMBRE", length = 50, unique = true, nullable = false)

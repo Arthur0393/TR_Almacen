@@ -9,8 +9,10 @@ import java.util.List;
 public interface ProductoServices {
 
     List<ProductoResponse> listar(
-            String nombre, String categoria,
-            BigDecimal precioMin, BigDecimal precioMax);
+            String nombre,
+            String categoria,
+            BigDecimal precioMin,
+            BigDecimal precioMax);
 
     ProductoResponse buscarPorId(Long id);
 

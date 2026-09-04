@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SucursalRepository extends JpaRepository<Sucursal, Long> {
 
-    //GET
+    // Validar creación
     Boolean existsByNombreIgnoreCase(String nombre);
 
-    //INSERT
+    // Validar actualización
     Boolean existsByNombreIgnoreCaseAndIdNot(String nombre,Long id);
 }

@@ -7,8 +7,10 @@ import com.carlos.almacen.enums.Categoria;
 import com.carlos.almacen.exceptions.RecursoNoEncontradoException;
 import com.carlos.almacen.mappers.ProductoMapper;
 import com.carlos.almacen.repositories.ProductoRepository;
+import com.carlos.almacen.specifications.ProductoSpecifications;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Transactional
 @Slf4j
-public class ProductoServiceImpl implements ProductoServices{
+public class ProductoServiceImpl implements ProductoServices {
 
     private final ProductoRepository productoRepository;
 
@@ -27,17 +29,45 @@ public class ProductoServiceImpl implements ProductoServices{
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductoResponse> listar(String nombre, String categoria, BigDecimal precioMin, BigDecimal precioMax) {
+    public List<ProductoResponse> listar(
+            String nombre,
+            String categoria,
+            BigDecimal precioMin,
+            BigDecimal precioMax) {
 
-        log.info("Listando todos los productos");
+        log.info(
+                "Listando productos con filtros -> nombre: {}, categoria: {}, precioMin: {}, precioMax: {}",
+                nombre,
+                categoria,
+                precioMin,
+                precioMax
+        );
 
-        return productoRepository.findAll().stream()
-                .map(productoMapper::entidadResponse).toList();
+        if (precioMin != null
+                && precioMax != null
+                && precioMin.compareTo(precioMax) > 0) {
+
+            throw new IllegalArgumentException(
+                    "El precio mínimo no puede ser mayor al precio máximo"
+            );
+        }
+
+        return productoRepository
+                .findAll(filtroAvanzado(nombre, categoria, precioMin, precioMax))
+                .stream()
+                .map(productoMapper::entidadResponse)
+                .toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProductoResponse buscarPorId(Long id) {
-        return null;
+
+        log.info("Buscando producto con id: {}", id);
+
+        Producto producto = obtenerProductooException(id);
+
+        return productoMapper.entidadResponse(producto);
     }
 
     @Override
@@ -71,9 +101,9 @@ public class ProductoServiceImpl implements ProductoServices{
                 request.precio(),
                 request.cantidad());
 
-        //productoRepository.save(producto); NO NECESARIO POR DIRY CHECKING
+        //productoRepository.save(producto); NO NECESARIO POR DIRTY CHECKING
 
-        log.info("Producto con id {} ", id);
+        log.info("Producto con id {} actualizado", id);
 
         return productoMapper.entidadResponse(producto);
 
@@ -100,4 +130,17 @@ public class ProductoServiceImpl implements ProductoServices{
                 () -> new RecursoNoEncontradoException("Producto no encontrado con id: " + id));
 
     }
+
+    private Specification<Producto> filtroAvanzado(
+            String nombre,
+            String categoria,
+            BigDecimal precioMin,
+            BigDecimal precioMax) {
+
+        return Specification.where(ProductoSpecifications.conNombre(nombre))
+                .and(ProductoSpecifications.conPrecioMin(precioMin))
+                .and(ProductoSpecifications.conCategoria(categoria))
+                .and(ProductoSpecifications.conPrecioMax(precioMax));
+    }
+
 }
