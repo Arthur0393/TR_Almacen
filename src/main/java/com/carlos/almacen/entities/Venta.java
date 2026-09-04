@@ -52,7 +52,7 @@ public class Venta {
 
     public void cancelar(){
         if(estadoVenta == EstadoVenta.CANCELADA)
-            throw new IllegalArgumentException("La venta ya esta cancelada");
+            throw new IllegalStateException("La venta ya esta cancelada"); // antes decía IllegalArgumentException
 
         estadoVenta = EstadoVenta.CANCELADA;
     }

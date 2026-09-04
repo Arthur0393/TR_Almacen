@@ -12,5 +12,5 @@ public interface VentaService {
 
     VentaResponse registrar(VentaRequest ventaRequest);
 
-    VentaResponse cancelar (long id);
+    VentaResponse cancelar (Long id);
 }

@@ -17,9 +17,8 @@ public record DetalleVentaResponse(
         Integer cantidadProducto,
 
         @Schema(description = "Precio unitario del producto", example = "1500.00")
-        Integer precioProducto,
+        BigDecimal precioProducto,   // <-- cambiado de Integer a BigDecimal
 
         @Schema(description = "Subtotal del producto", example = "1500.00")
         BigDecimal subtotal
-) {
-}
+) {}
