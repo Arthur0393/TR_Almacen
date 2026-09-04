@@ -6,11 +6,14 @@ import com.carlos.almacen.dto.ventas.VentaResponse;
 import java.util.List;
 
 public interface VentaService {
-    List<VentaResponse>listar();
+
+    List<VentaResponse> listar(); // ahora solo REGISTRADAS
+
+    List<VentaResponse> listarHistoricoCanceladas(); // nuevo
 
     VentaResponse ObtenerPorIdActiva(Long id);
 
     VentaResponse registrar(VentaRequest ventaRequest);
 
-    VentaResponse cancelar (Long id);
+    VentaResponse cancelar(Long id);
 }

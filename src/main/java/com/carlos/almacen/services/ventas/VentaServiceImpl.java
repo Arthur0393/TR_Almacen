@@ -32,7 +32,18 @@ public class VentaServiceImpl implements VentaService {
     @Override
     @Transactional(readOnly = true) // solo lectura: evita overhead de dirty checking innecesario
     public List<VentaResponse> listar() {
-        return ventaRepository.findAll().stream()
+        // Requerimiento C: el listado estándar solo debe mostrar ventas activas (REGISTRADA).
+        // Las canceladas se consultan aparte, en listarHistoricoCanceladas().
+        return ventaRepository.findByEstadoVenta(EstadoVenta.REGISTRADA).stream()
+                .map(ventaMapper::entidadAResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VentaResponse> listarHistoricoCanceladas() {
+        // Endpoint/método exclusivo para consultar el histórico de ventas anuladas
+        return ventaRepository.findByEstadoVenta(EstadoVenta.CANCELADA).stream()
                 .map(ventaMapper::entidadAResponse)
                 .toList();
     }

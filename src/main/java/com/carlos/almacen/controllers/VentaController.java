@@ -74,4 +74,12 @@ public class VentaController {
     ){
         return ResponseEntity.ok(ventaService.cancelar(id));
     }
+    @GetMapping("/canceladas")
+    @Operation(
+            summary = "Listar histórico de ventas canceladas",
+            tags = {"Ventas - Consultas"}
+    )
+    public ResponseEntity<List<VentaResponse>> listarCanceladas(){
+        return ResponseEntity.ok(ventaService.listarHistoricoCanceladas());
+    }
 }
